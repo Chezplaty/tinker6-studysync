@@ -39,7 +39,7 @@ def render_session_scorer_tab():
 
 
 def run_demo():
-    sessions = [55, 68, 82, 91, 77]
+    sessions = [300, 68, 82.4, -50, 77]
     streak = 3
     for raw in sessions:
         boosted = apply_streak_bonus(raw, streak)
