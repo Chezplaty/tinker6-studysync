@@ -36,9 +36,11 @@ def next_occurrence(last_date: date, frequency: str) -> date:
     Return the next scheduled date given the last session date and a
     frequency label ("daily" or "weekly"), using FREQUENCY_DAYS and timedelta.
     """
-    # TODO (Part 4): look up the day count for `frequency` in FREQUENCY_DAYS
-    # and add that many days to last_date using timedelta.
-    raise NotImplementedError
+
+    if frequency in FREQUENCY_DAYS:
+        return last_date + timedelta(days=FREQUENCY_DAYS[frequency])
+    else:
+        pass
 
 
 def find_conflicts(sessions: list) -> list:
