@@ -9,6 +9,7 @@ detected yet.
 
 from datetime import date, timedelta
 from dataclasses import dataclass
+from collections import defaultdict
 
 FREQUENCY_DAYS = {"daily": 1, "weekly": 7}
 
@@ -47,9 +48,18 @@ def find_conflicts(sessions: list) -> list:
     Return a list of (session_a, session_b) tuples for every pair that shares
     the same "slot". Must NOT crash on an empty list or a list with no conflicts.
     """
-    # TODO (Part 4): implement without crashing on empty input. A simple
-    # nested loop comparing each pair once is fine.
-    raise NotImplementedError
+
+    res = []
+    slots = defaultdict(list)
+    for session in sessions:
+        slots[session["slot"]].append(session)
+
+    for group in slots.values():
+        for i in range(len(group)):
+            for j in range(i + 1, len(group)):
+                res.append((group[i], group[j]))
+
+    return res
 
 
 def render_session_log_tab():
