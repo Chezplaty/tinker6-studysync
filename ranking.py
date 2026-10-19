@@ -43,7 +43,7 @@ def score_study_spot(profile: dict, spot: dict) -> tuple:
     spot_noise = NOISE_ORDER[spot["noise_level"]]
     max_noise = NOISE_ORDER[profile["max_noise"]]
     if spot_noise <= max_noise:
-        score += 2.0
+        score += 2.0 + (max_noise - spot_noise) * 0.5
         reasons.append("quiet enough")
     else:
         score -= 2.0
@@ -51,7 +51,10 @@ def score_study_spot(profile: dict, spot: dict) -> tuple:
 
     # Distance: reward spots within the max distance, penalize farther ones
     if spot["distance_miles"] <= profile["max_distance"]:
-        score += 2.0
+        if profile["max_distance"] > 0:
+            score += 2.0 + (1 - spot["distance_miles"] / profile["max_distance"])
+        else:
+            score += 2.0
         reasons.append("close enough")
     else:
         score -= 1.0
@@ -59,7 +62,7 @@ def score_study_spot(profile: dict, spot: dict) -> tuple:
 
     # Seats: reward spots with enough seats, penalize ones that fall short
     if spot["seats_available"] >= profile["min_seats"]:
-        score += 1.0
+        score += 1.0 + min(spot["seats_available"] - profile["min_seats"], 10) * 0.1
         reasons.append("enough seats")
     else:
         score -= 1.0
@@ -81,7 +84,11 @@ def rank_study_spots(profile: dict, spots: list, k: int = 3) -> list:
         score, reasons = score_study_spot(profile, spot)
         scored_spots.append((spot, score, reasons))
 
-    return sorted(scored_spots, key=lambda scored_spots: scored_spots[1], reverse=True)[:k]
+    return sorted(
+        scored_spots,
+        key=lambda item: (item[1], -item[0]["distance_miles"], item[0]["seats_available"]),
+        reverse=True,
+    )[:k]
 
 
 def format_results(ranked: list) -> None:
