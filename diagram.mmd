@@ -1,2 +1,4 @@
-<!-- Save your AI-generated Mermaid flowchart source here (Tinker 3B, Part 4). -->
-<!-- Replace this comment with a fenced ```mermaid``` code block: input -> process/score -> output. -->
+flowchart LR
+    A["CSV input<br/>load_study_spots()"] --> B["Scoring<br/>score_study_spot()"]
+    B --> C["Ranking<br/>rank_study_spots()"]
+    C --> D["Formatted output<br/>format_results()"]
